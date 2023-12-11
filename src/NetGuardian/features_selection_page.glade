@@ -11,7 +11,7 @@
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="valign">start</property>
-        <property name="column-spacing">10</property>
+        <property name="column-spacing">30</property>
         <property name="row-spacing">10</property>
         <property name="max-children-per-line">5</property>
         <property name="activate-on-single-click">False</property>

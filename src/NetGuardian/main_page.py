@@ -3,6 +3,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GLib
 
 from .page_template import PageTemplate
+from .dataset_reader import DatasetReader
 from .constants import *
 
 from typing import TYPE_CHECKING
@@ -34,50 +35,65 @@ class MainPage(Gtk.ScrolledWindow):
                 page_title
             )
 
-    @Gtk.Template.Callback()
-    def next_button_clicked_cb(self, *args, **kwargs):
+    def _get_next_page(self):
         current_page = self.main_stack.get_visible_child_name()
         
         page_titles = list(self.pages.keys())
 
         curren_page_idx = page_titles.index(current_page)
 
-        next_page = page_titles[curren_page_idx + 1] \
+        next_page_title = page_titles[curren_page_idx + 1] \
                         if curren_page_idx + 1 < len(page_titles) \
                             else current_page
 
-        page_widget = self.pages.get(next_page)
+        next_page_widget = self.pages.get(next_page_title)
 
-        if next_page == FEATURES_SELECTION_PAGE:
-            page_widget:FeaturesSelectionPage
-            page_widget.load_features()
+        return next_page_title, next_page_widget
 
-        elif next_page == MODEL_SELECTION_PAGE:
-            pass
-
-        elif next_page == LOADING_PAGE:
-            pass
-
-        elif next_page == RESULT_PAGE:
-            pass
-
-        self.main_stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT)
-        self.main_stack.set_visible_child_name(next_page)
-
-    @Gtk.Template.Callback()
-    def back_button_clicked_cb(self, *args, **kwargs):
+    def _get_previous_page(self):
         current_page = self.main_stack.get_visible_child_name()
         
         page_titles = list(self.pages.keys())
 
         curren_page_idx = page_titles.index(current_page)
 
-        previous_page = page_titles[curren_page_idx - 1] \
+        previous_page_title = page_titles[curren_page_idx - 1] \
                         if curren_page_idx - 1 >= 0 \
                             else current_page
+
+        previous_page_widget = self.pages.get(previous_page_title)
+
+        return previous_page_title, previous_page_widget
+
+    @Gtk.Template.Callback()
+    def next_button_clicked_cb(self, *args, **kwargs):
+        next_page_title, next_page_widget = self._get_next_page()
+        current_page = self.pages.get(self.main_stack.get_visible_child_name())
+
+        if next_page_title == FEATURES_SELECTION_PAGE:
+            next_page_widget:FeaturesSelectionPage
+            next_page_widget.load_features()
+
+        elif next_page_title == MODEL_SELECTION_PAGE:
+            current_page:FeaturesSelectionPage
+            current_page.set_selected_features()
+
+        elif next_page_title == LOADING_PAGE:
+            pass
+
+        elif next_page_title == RESULT_PAGE:
+            pass
+
+        self.main_stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT)
+        self.main_stack.set_visible_child_name(next_page_title)
+
+    @Gtk.Template.Callback()
+    def back_button_clicked_cb(self, *args, **kwargs):
+        previous_page_title, previous_page_widget = self._get_previous_page()
         
         self.main_stack.set_transition_type(Gtk.StackTransitionType.SLIDE_RIGHT)
-        self.main_stack.set_visible_child_name(previous_page)
+        self.main_stack.set_visible_child_name(previous_page_title)
+
     
     @Gtk.Template.Callback()
     def exit_button_clicked_cb(self, *args, **kwargs):

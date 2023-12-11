@@ -2,10 +2,14 @@ import pandas as pd
 
 from sklearn.model_selection import train_test_split
 
+from typing import List
+
 class DatasetReader:
     _self = None
 
     dataset: pd.DataFrame = None
+    selected_features: List[str] = None
+    label_feature: str = None
 
     def __new__(cls, *args, **kwargs):
         if cls._self is None:
@@ -21,8 +25,13 @@ class DatasetReader:
         return DatasetReader.dataset.columns.tolist()
 
     @staticmethod
-    def get_dataset_with_selected_features(features):
-        return DatasetReader.dataset[features]
+    def set_selected_features_and_label(selected_features, label_feature):
+        DatasetReader.selected_features = selected_features
+        DatasetReader.label_feature = label_feature
+
+    @staticmethod
+    def get_dataset_with_selected_features():
+        return DatasetReader.dataset[DatasetReader.selected_features]
 
     @staticmethod
     def dataset_split_train_test(test_percentage=0.2):
