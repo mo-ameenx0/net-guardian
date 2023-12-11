@@ -1,0 +1,5 @@
+DATASET_SELECTION_PAGE = 'Dataset Selection'
+FEATURES_SELECTION_PAGE = 'Features Selection'
+MODEL_SELECTION_PAGE = 'Model Selection'
+LOADING_PAGE = 'Loading Page'
+RESULT_PAGE = 'Result Page'
