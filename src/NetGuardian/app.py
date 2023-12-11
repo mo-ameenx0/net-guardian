@@ -5,6 +5,9 @@ from gi.repository import Gtk, Gdk
 from .main_page import MainPage
 from .dataset_selection_page import DatasetSelectionPage
 from .features_selection_page import FeaturesSelectionPage
+from .model_selection_page import ModelSelectionPage
+from .loading_page import LoadingPage
+from .result_page import ResultPage
 from .constants import *
 
 class NetGuardian(Gtk.Application):
@@ -14,9 +17,9 @@ class NetGuardian(Gtk.Application):
         pages = {
             DATASET_SELECTION_PAGE: DatasetSelectionPage(),
             FEATURES_SELECTION_PAGE: FeaturesSelectionPage(),
-            MODEL_SELECTION_PAGE: Gtk.Label(label='Model Selection Page'),
-            LOADING_PAGE: Gtk.Label(label='Loading Page'),
-            RESULT_PAGE: Gtk.Label(label='Result Page')
+            MODEL_SELECTION_PAGE: ModelSelectionPage(),
+            LOADING_PAGE: LoadingPage(),
+            RESULT_PAGE: ResultPage()
         }
 
         main_page = MainPage(pages)

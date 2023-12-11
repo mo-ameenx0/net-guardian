@@ -3,14 +3,15 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GLib
 
 from .page_template import PageTemplate
-from .dataset_reader import DatasetReader
 from .constants import *
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .features_selection_page import FeaturesSelectionPage
+    from .model_selection_page import ModelSelectionPage
 from typing import Dict
 
+import asyncio
 import sys
 import pkg_resources
 
@@ -79,13 +80,23 @@ class MainPage(Gtk.ScrolledWindow):
             current_page.set_selected_features()
 
         elif next_page_title == LOADING_PAGE:
-            pass
-
-        elif next_page_title == RESULT_PAGE:
-            pass
+            current_page:ModelSelectionPage
+            task = asyncio.create_task(current_page.run_selected_models())
+            task.add_done_callback(self.show_models_results_cb)
 
         self.main_stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT)
         self.main_stack.set_visible_child_name(next_page_title)
+
+    def show_models_results_cb(self, task, *args, **kwargs):
+        results = task.result()
+
+        result_page = self.pages.get(RESULT_PAGE)
+
+        result_page.set_results(results)
+
+        self.main_stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT)
+        self.main_stack.set_visible_child_name(RESULT_PAGE)
+
 
     @Gtk.Template.Callback()
     def back_button_clicked_cb(self, *args, **kwargs):

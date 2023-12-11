@@ -30,12 +30,12 @@ class DatasetReader:
         DatasetReader.label_feature = label_feature
 
     @staticmethod
-    def get_dataset_with_selected_features():
-        return DatasetReader.dataset[DatasetReader.selected_features]
-
-    @staticmethod
     def dataset_split_train_test(test_percentage=0.2):
-        X_train, X_test, y_train, y_test = train_test_split(X, y,
+        X = DatasetReader.dataset[DatasetReader.selected_features]
+        y = DatasetReader.dataset[DatasetReader.label_feature]
+
+        X_train, X_test, y_train, y_test = train_test_split(
+                                                    X, y,
                                                     test_size = test_percentage,
                                                     stratify=y)
 

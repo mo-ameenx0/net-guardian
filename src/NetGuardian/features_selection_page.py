@@ -16,6 +16,9 @@ class FeaturesSelectionPage(Gtk.Box):
         super().__init__()
 
     def load_features(self):
+        for child in self.features_flowbox.get_children():
+            self.features_flowbox.remove(child)
+
         radio_button_group = None
         for feature in DatasetReader.get_dataset_features():
             feature_row, radio_button_group = self.create_feature_row(feature, radio_button_group)
@@ -37,10 +40,10 @@ class FeaturesSelectionPage(Gtk.Box):
             radio_button_group,
             label='Is label?'
         )
-        label_radio_button.set_sensitive(False)
 
         feature_check_button = Gtk.CheckButton()
-        feature_check_button.connect('toggled', self.feature_check_button_toggle_cb, label_radio_button)
+        feature_check_button.set_active(True)
+
 
         small_box.pack_start(feature_check_button, False, False, 5)
         small_box.pack_start(feature_name, False, False, 5)
@@ -52,14 +55,6 @@ class FeaturesSelectionPage(Gtk.Box):
         flowboxchild.add(main_box)
 
         return flowboxchild, label_radio_button
-
-    def feature_check_button_toggle_cb(self, feature_check_button, label_radio_button, *args, **kwargs):
-        if feature_check_button.get_active():
-            label_radio_button.set_sensitive(True)
-            return
-
-        label_radio_button.set_active(False)
-        label_radio_button.set_sensitive(False)
 
     def set_selected_features(self):
         selected_features = []
@@ -77,13 +72,14 @@ class FeaturesSelectionPage(Gtk.Box):
 
             feature_check_button = small_box_children[0]
             feature_name = small_box_children[1]
+            
+            if label_radio_button.get_active():
+                label_feature = feature_name.get_text()
 
             if not feature_check_button.get_active():
                 continue
 
             selected_features.append(feature_name.get_text())
 
-            if label_radio_button.get_active():
-                label_feature = feature_name.get_text()
 
         DatasetReader.set_selected_features_and_label(selected_features, label_feature)
